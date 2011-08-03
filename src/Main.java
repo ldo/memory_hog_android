@@ -11,6 +11,9 @@ package nz.gen.geek_central.MemoryHog;
     But that's OK, you were going to return to the previous activity
     anyway...
 
+    Then you discover that everything prior to that has also been
+    killed, including the launcher. Bit of a sledgehammer, eh wot...
+
     Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 */
 
