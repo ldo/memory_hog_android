@@ -1,11 +1,13 @@
 package nz.gen.geek_central.MemoryHog;
 
+import android.graphics.Bitmap;
+
 public class Main extends android.app.Activity
   {
 
     android.os.Handler Runner;
     android.widget.TextView Message;
-    byte[][] Grabbed;
+    Bitmap[] Grabbed;
     int GrabCount;
 
     private class Grabber implements Runnable
@@ -16,14 +18,19 @@ public class Main extends android.app.Activity
               {
                 if (GrabCount == Grabbed.length)
                   {
-                    final byte[][] NewGrabbed = new byte[Grabbed.length * 2][];
+                    final Bitmap[] NewGrabbed = new Bitmap[Grabbed.length * 2];
                     for (int i = 0; i < GrabCount; ++i)
                       {
                         NewGrabbed[i] = Grabbed[i];
                       } /*for*/
                     Grabbed = NewGrabbed;
                   } /*if*/
-                Grabbed[GrabCount++] = new byte[1048576];
+                Grabbed[GrabCount++] = Bitmap.createBitmap
+                  (
+                    512,
+                    512,
+                    Bitmap.Config.ARGB_8888
+                  );
                 Message.setText(String.format("Grabbed %dMiB", GrabCount));
                 Runner.post(new Grabber());
               }
@@ -52,7 +59,7 @@ public class Main extends android.app.Activity
     public void onResume()
       {
         super.onResume();
-        Grabbed = new byte[128][];
+        Grabbed = new Bitmap[128];
         GrabCount = 0;
         Runner.post(new Grabber());
       } /*onResume*/
@@ -60,6 +67,16 @@ public class Main extends android.app.Activity
     @Override
     public void onPause()
       {
+        if (Grabbed != null)
+          {
+            for (Bitmap b : Grabbed)
+              {
+                if (b != null)
+                  {
+                    b.recycle();
+                  } /*if*/
+              } /*if*/
+          } /*if*/
         Grabbed = null;
         super.onPause();
       } /*onPause*/
