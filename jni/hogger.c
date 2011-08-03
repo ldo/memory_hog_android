@@ -1,3 +1,15 @@
+/*
+    Memory-hog test app for Android. See src/Main.java for
+    an overview. Native code is needed because Java code
+    is strictly limited in how much memory it can allocate.
+
+    This code tries to gracefully return an out-of-memory
+    indication; unfortunately, instead of malloc returning
+    a failure, the system simply kills the process.
+
+    Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+*/
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
