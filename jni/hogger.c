@@ -119,17 +119,17 @@ jint JNI_OnLoad
     fprintf(stderr, "Hogger: JNI_Onload\n");
     do /*once*/
       {
-        if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
+        if ((**vm).GetEnv(vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
           {
             fprintf(stderr, "Hogger: JNI_Onload: could not request JNI version %d\n", JNI_VERSION_1_6);
             break;
           } /*if*/
         if
           (
-                (*env)->RegisterNatives
+                (**env).RegisterNatives
                   (
                     env,
-                    (*env)->FindClass(env, "nz/gen/geek_central/MemoryHog/Main"),
+                    (**env).FindClass(env, "nz/gen/geek_central/MemoryHog/Main"),
                     methods,
                     sizeof methods / sizeof(JNINativeMethod)
                   )
