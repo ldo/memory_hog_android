@@ -1,4 +1,6 @@
 /bin/
 /gen/
+/obj/
+/libs/
 /local.properties
 /keystore.properties
