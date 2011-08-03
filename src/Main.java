@@ -1,7 +1,5 @@
 package nz.gen.geek_central.MemoryHog;
 
-import android.graphics.Bitmap;
-
 public class Main extends android.app.Activity
   {
 
