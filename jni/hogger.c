@@ -113,7 +113,7 @@ jint JNI_OnLoad
             {
                 .name = "FreeAll",
                 .signature = "()V",
-                .fnPtr = "FreeAll",
+                .fnPtr = FreeAll,
             },
         };
     fprintf(stderr, "Hogger: JNI_Onload\n");
