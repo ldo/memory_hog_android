@@ -32,8 +32,10 @@ package nz.gen.geek_central.MemoryHog;
 public class Main extends android.app.Activity
   {
 
-    android.os.Handler Runner;
-    android.widget.TextView Message;
+    protected android.os.Handler Runner;
+    protected android.widget.TextView Message;
+    protected android.widget.ArrayAdapter<String> Digits;
+    protected DigitSpinner Hundreds, Tens, Units;
 
     protected native int GrabMore();
     protected native void FreeAll();
@@ -67,9 +69,32 @@ public class Main extends android.app.Activity
       )
       {
         super.onCreate(savedInstanceState);
-        Message = new android.widget.TextView(this);
-        Message.setText("Starting...");
-        setContentView(Message);
+        setContentView(R.layout.main);
+        Message = (android.widget.TextView)findViewById(R.id.message);
+        Hundreds = (DigitSpinner)findViewById(R.id.hundreds);
+        Tens = (DigitSpinner)findViewById(R.id.tens);
+        Units = (DigitSpinner)findViewById(R.id.units);
+        ((android.widget.Button)findViewById(R.id.doit)).setOnClickListener
+          (
+            new android.view.View.OnClickListener()
+              {
+                public void onClick
+                  (
+                    android.view.View TheView
+                  )
+                  {
+                    System.err.printf
+                      (
+                        "MemoryHog.Main: doit clicked, selected digits are %d, %d, %d\n",
+                        Hundreds.GetDigit(),
+                        Tens.GetDigit(),
+                        Units.GetDigit()
+                      );
+                  /* TBD */
+                  } /*onClick*/
+              } /*OnClickListener*/
+          );
+        Message.setText("Choose Size");
         Runner = new android.os.Handler();
       } /*onCreate*/
 
@@ -77,12 +102,14 @@ public class Main extends android.app.Activity
     public void onResume()
       {
         super.onResume();
-        Runner.post(new Grabber());
+      /* Runner.post(new Grabber()); */
+      /* TBD */
       } /*onResume*/
 
     @Override
     public void onPause()
       {
+      /* TBD */
         FreeAll();
         super.onPause();
       } /*onPause*/

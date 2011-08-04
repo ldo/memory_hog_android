@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Memory Hog!</string>
+    <string name="mib">MiB</string>
+    <string name="doit">Hog Memory!</string>
 </resources>
