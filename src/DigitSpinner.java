@@ -132,10 +132,11 @@ public class DigitSpinner extends android.view.View
                     Digits.add(Integer.toString(d));
                   } /*for*/
                 final android.widget.ListView DigitsDisplay = new android.widget.ListView(Context);
+                final android.view.View SampleView = inflate(Context, R.layout.digit_item, null);
                 DigitsDisplay.setAdapter(Digits);
                 DigitsDisplay.setChoiceMode(DigitsDisplay.CHOICE_MODE_SINGLE);
                 DigitsDisplay.setSelection(CurDigit);
-                DigitsDisplay.setBackgroundColor(0x80ffffff);
+                DigitsDisplay.setBackgroundDrawable(SampleView.getBackground());
                 final android.widget.PopupWindow ThePopup =
                     new android.widget.PopupWindow(DigitsDisplay);
                 DigitsDisplay.setOnItemClickListener
