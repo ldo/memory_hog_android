@@ -21,6 +21,7 @@ public class DigitSpinner extends android.view.View
   {
     protected android.content.Context Context;
     protected int CurDigit;
+    protected android.widget.TextView SampleView;
 
     protected void Init
       (
@@ -29,6 +30,7 @@ public class DigitSpinner extends android.view.View
       /* common code for all constructors */
       {
         this.Context = Context;
+        SampleView = (android.widget.TextView)inflate(Context, R.layout.digit_item, null);
         CurDigit = 0;
       } /*Init*/
 
@@ -99,11 +101,14 @@ public class DigitSpinner extends android.view.View
         android.graphics.Canvas Dest
       )
       {
-        System.err.printf("DigitSpinner drawing into %dx%d\n", getWidth(), getHeight()); /* debug */
-        Dest.drawColor(0xffffffff);
+        final android.graphics.drawable.Drawable Background = SampleView.getBackground();
+        if (Background != null)
+          {
+            Background.draw(Dest);
+          } /*if*/
         final android.graphics.Paint How = new android.graphics.Paint();
-        How.setTextSize(24.0f); /* nice to get this from resource */
-        How.setColor(0xff000000);
+        How.setTextSize(SampleView.getTextSize());
+        How.setColor(SampleView.getCurrentTextColor());
         DrawCenteredText
           (
             Dest,
@@ -132,7 +137,6 @@ public class DigitSpinner extends android.view.View
                     Digits.add(Integer.toString(d));
                   } /*for*/
                 final android.widget.ListView DigitsDisplay = new android.widget.ListView(Context);
-                final android.view.View SampleView = inflate(Context, R.layout.digit_item, null);
                 DigitsDisplay.setAdapter(Digits);
                 DigitsDisplay.setChoiceMode(DigitsDisplay.CHOICE_MODE_SINGLE);
                 DigitsDisplay.setSelection(CurDigit);

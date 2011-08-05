@@ -28,7 +28,8 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="@string/mib"
-            android:textSize="24sp"
+            android:padding="5dp"
+            android:textSize="20sp"
         />
     </LinearLayout>
     <Button
