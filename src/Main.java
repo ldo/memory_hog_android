@@ -82,20 +82,17 @@ public class Main extends android.app.Activity
                             Tens.GetDigit() * 10
                         +
                             Units.GetDigit();
-                    android.widget.Toast.makeText
+                    Message.setText
                       (
-                        /*context =*/ Main.this,
-                        /*text =*/
-                            String.format
-                              (
-                                GrabIt((long)HowMuch * 1048576L) ?
-                                    "Grabbed %d MiB"
-                                :
-                                    "Failed to grab %d MiB",
-                                HowMuch
-                              ),
-                        /*duration =*/ android.widget.Toast.LENGTH_SHORT
-                      ).show();
+                        String.format
+                          (
+                            GrabIt((long)HowMuch * 1048576L) ?
+                                "Grabbed %d MiB"
+                            :
+                                "Failed to grab %d MiB",
+                            HowMuch
+                          )
+                      );
                   } /*onClick*/
               } /*OnClickListener*/
           );
