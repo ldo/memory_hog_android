@@ -25,7 +25,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <jni.h>
 
 static void *
@@ -47,6 +46,7 @@ static jboolean GrabIt
     Success = Grabbed != 0;
     if (Success)
       {
+      /* ensure memory really is allocated */
         memset(Grabbed, -1, GrabSize);
       } /*if*/
     return
@@ -85,14 +85,10 @@ jint JNI_OnLoad
                 .fnPtr = FreeIt,
             },
         };
-    fprintf(stderr, "Hogger: JNI_Onload\n");
     do /*once*/
       {
         if ((**vm).GetEnv(vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
-          {
-            fprintf(stderr, "Hogger: JNI_Onload: could not request JNI version %d\n", JNI_VERSION_1_6);
             break;
-          } /*if*/
         if
           (
                 (**env).RegisterNatives
@@ -105,10 +101,7 @@ jint JNI_OnLoad
             !=
                 0
           )
-          {
-            fprintf(stderr, "Hogger: JNI_Onload: failed to RegisterNatives\n");
             break;
-          } /*if*/
       /* all done */
         result = JNI_VERSION_1_6;
       }
