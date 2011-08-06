@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/mib"
             android:padding="5dp"
+            android:layout_gravity="center"
             android:textSize="20sp"
         />
     </LinearLayout>

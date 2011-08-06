@@ -17,11 +17,11 @@ package nz.gen.geek_central.MemoryHog;
     permissions and limitations under the License.
 */
 
-public class DigitSpinner extends android.view.View
+public class DigitSpinner extends android.widget.RelativeLayout
   {
     protected android.content.Context Context;
     protected int CurDigit;
-    protected android.widget.TextView SampleView;
+    protected android.widget.TextView RenderView;
 
     protected void Init
       (
@@ -30,8 +30,12 @@ public class DigitSpinner extends android.view.View
       /* common code for all constructors */
       {
         this.Context = Context;
-        SampleView = (android.widget.TextView)inflate(Context, R.layout.digit_item, null);
-        CurDigit = 0;
+        RenderView = (android.widget.TextView)inflate(Context, R.layout.digit_item, null);
+        setGravity(CENTER_IN_PARENT);
+        addView(RenderView);
+        requestLayout();
+        CurDigit = -1;
+        SetDigit(0);
       } /*Init*/
 
     public DigitSpinner
@@ -64,63 +68,6 @@ public class DigitSpinner extends android.view.View
       } /*DigitSpinner*/
 
     @Override
-    protected void onMeasure
-      (
-        int MeasureWidth,
-        int MeasureHeight
-      )
-      {
-        setMeasuredDimension(50, 50);
-          /* nice to get these from resource */
-      } /*onMeasure*/
-
-    private static void DrawCenteredText
-      (
-        android.graphics.Canvas Draw,
-        String TheText,
-        float x,
-        float y,
-        android.graphics.Paint UsePaint
-      )
-      /* draws text at position x, vertically centred around y. */
-      {
-        final android.graphics.Rect TextBounds = new android.graphics.Rect();
-        UsePaint.getTextBounds(TheText, 0, TheText.length(), TextBounds);
-        Draw.drawText
-          (
-            TheText,
-            x, /* depend on UsePaint to align horizontally */
-            y - (TextBounds.bottom + TextBounds.top) / 2.0f,
-            UsePaint
-          );
-      } /*DrawCenteredText*/
-
-    @Override
-    public void onDraw
-      (
-        android.graphics.Canvas Dest
-      )
-      {
-        final android.graphics.drawable.Drawable Background = SampleView.getBackground();
-        if (Background != null)
-          {
-            Background.draw(Dest);
-          } /*if*/
-        final android.graphics.Paint How = new android.graphics.Paint();
-        How.setTextSize(SampleView.getTextSize());
-        How.setColor(SampleView.getCurrentTextColor());
-        DrawCenteredText
-          (
-            Dest,
-            Integer.toString(CurDigit),
-            getWidth() / 2.0f,
-            getHeight() / 2.0f,
-            How
-          );
-          /* better styling TBD */
-      } /*onDraw*/
-
-    @Override
     public boolean onTouchEvent
       (
         android.view.MotionEvent TheEvent
@@ -140,7 +87,7 @@ public class DigitSpinner extends android.view.View
                 DigitsDisplay.setAdapter(Digits);
                 DigitsDisplay.setChoiceMode(DigitsDisplay.CHOICE_MODE_SINGLE);
                 DigitsDisplay.setSelection(CurDigit);
-                DigitsDisplay.setBackgroundDrawable(SampleView.getBackground());
+                DigitsDisplay.setBackgroundDrawable(RenderView.getBackground());
                 final android.widget.PopupWindow ThePopup =
                     new android.widget.PopupWindow(DigitsDisplay);
                 DigitsDisplay.setOnItemClickListener
@@ -196,7 +143,7 @@ public class DigitSpinner extends android.view.View
         if (NewDigit != CurDigit && NewDigit >= 0 && NewDigit < 10)
           {
             CurDigit = NewDigit;
-            invalidate();
+            RenderView.setText(Integer.toString(CurDigit));
           } /*if*/
       } /*SetDigit*/
 
