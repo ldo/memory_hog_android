@@ -1,11 +1,16 @@
-Memory Hog is a test Android application to try to allocate as much
-memory as possible. This forces activities in the back stack to be
-terminated, so you can check that they properly handle onSaveInstanceState
-and onRestoreInstanceState calls.
+Memory Hog is a test Android application to try to allocate large
+amounts of memory. This forces activities in the back stack to be
+terminated, so you can check that they properly handle
+onSaveInstanceState and onRestoreInstanceState calls.
 
-NOTE THIS APP COULD BE A LITTLE DANGEROUS. In testing, it killed every
-UI process, including the launcher. Of course, everything automatically
-restarted as necessary without obvious ill effects, but be warned.
+NOTE THIS APP COULD BE A LITTLE DANGEROUS. Have a running “adb logcat”
+display so you can watch the system log on your device. Start with a
+small allocation (e.g. 20MiB), and try doubling it until you see
+“Process <package-name> (pid nnn) has died” and “Low Memory: No more
+background processes” messages. This would be a good point to stop. Go
+further, and you can kill every UI process, including the launcher. Of
+course, in my testing, everything automatically restarted as necessary
+without obvious ill effects, but be warned.
 
 Contents:
     src/ -- Java sources for the Android app
