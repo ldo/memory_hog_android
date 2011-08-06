@@ -24,76 +24,45 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <jni.h>
 
-static void **
+static void *
     Grabbed = 0;
-static int
-    GrabCount = 0,
-    GrabMax = 0;
+static long
+    GrabSize = 0;
 
-static jint GrabMore
+static jboolean GrabIt
   (
     JNIEnv * env,
-    jobject this
+    jobject this,
+    jlong HowMuch
   )
   {
-    int result = -1;
-    enum
+    bool Success;
+    free(Grabbed);
+    GrabSize = HowMuch;
+    Grabbed = malloc(GrabSize);
+    Success = Grabbed != 0;
+    if (Success)
       {
-        GrabIncr = 1048576,
-      };
-    fprintf(stderr, "Hogger: GrabMore\n");
-    do /*once*/
-      {
-        if (GrabCount == GrabMax)
-          {
-            const int NewGrabMax = GrabMax == 0 ? 128 : 2 * GrabMax;
-            Grabbed = realloc(Grabbed, NewGrabMax * sizeof(void *));
-            if (Grabbed == 0)
-                break;
-            GrabMax = NewGrabMax;
-          } /*if*/
-          {
-            int i;
-            void * const NewGrab = malloc(GrabIncr);
-            if (NewGrab == 0)
-                break;
-            for (i = 0; i < GrabIncr; ++i)
-              {
-              /* ensure memory is touched */
-                ((unsigned char *)NewGrab)[i] = -1;
-              } /*for*/
-            Grabbed[GrabCount++] = NewGrab;
-          }
-        result = GrabCount;
-      }
-    while (false);
-    return
-        result;
-  } /*GrabMore*/
-
-static void FreeAll
-  (
-    JNIEnv * env,
-    jobject this
-  )
-  {
-    fprintf(stderr, "Hogger: FreeAll\n");
-    if (Grabbed != 0)
-      {
-        int i;
-        for (i = 0; i < GrabCount; ++i)
-          {
-            free(Grabbed[i]);
-          } /*for*/
-        free(Grabbed);
-        Grabbed = 0;
+        memset(Grabbed, -1, GrabSize);
       } /*if*/
-    GrabCount = 0;
-    GrabMax = 0;
-  } /*FreeAll*/
+    return
+        Success;
+  } /*GrabIt*/
+
+static void FreeIt
+  (
+    JNIEnv * env,
+    jobject this
+  )
+  {
+    free(Grabbed);
+    Grabbed = 0;
+    GrabSize = 0;
+  } /*FreeIt*/
 
 jint JNI_OnLoad
   (
@@ -106,14 +75,14 @@ jint JNI_OnLoad
     JNINativeMethod methods[] =
         {
             {
-                .name = "GrabMore",
-                .signature = "()I",
-                .fnPtr = GrabMore,
+                .name = "GrabIt",
+                .signature = "(J)Z",
+                .fnPtr = GrabIt,
             },
             {
-                .name = "FreeAll",
+                .name = "FreeIt",
                 .signature = "()V",
-                .fnPtr = FreeAll,
+                .fnPtr = FreeIt,
             },
         };
     fprintf(stderr, "Hogger: JNI_Onload\n");

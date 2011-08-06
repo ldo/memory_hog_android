@@ -37,30 +37,16 @@ public class Main extends android.app.Activity
     protected android.widget.ArrayAdapter<String> Digits;
     protected DigitSpinner Hundreds, Tens, Units;
 
-    protected native int GrabMore();
-    protected native void FreeAll();
+    protected native boolean GrabIt
+      (
+        long HowMuch
+      );
+    protected native void FreeIt();
 
     static
       {
         System.loadLibrary("hogger");
       } /*static*/
-
-    private class Grabber implements Runnable
-      {
-        public void run()
-          {
-            final int GrabCount = GrabMore();
-            if (GrabCount > 0)
-              {
-                Message.setText(String.format("Grabbed %dMiB", GrabCount));
-                Runner.post(new Grabber());
-              }
-            else
-              {
-                Message.setText(Message.getText() + " That’s all, folks.");
-              } /*if*/
-          } /*run*/
-      } /*Grabber*/
 
     @Override
     public void onCreate
@@ -90,7 +76,26 @@ public class Main extends android.app.Activity
                         Tens.GetDigit(),
                         Units.GetDigit()
                       );
-                  /* TBD */
+                    final int HowMuch =
+                            Hundreds.GetDigit() * 100
+                        +
+                            Tens.GetDigit() * 10
+                        +
+                            Units.GetDigit();
+                    android.widget.Toast.makeText
+                      (
+                        /*context =*/ Main.this,
+                        /*text =*/
+                            String.format
+                              (
+                                GrabIt((long)HowMuch * 1048576L) ?
+                                    "Grabbed %d MiB"
+                                :
+                                    "Failed to grab %d MiB",
+                                HowMuch
+                              ),
+                        /*duration =*/ android.widget.Toast.LENGTH_SHORT
+                      ).show();
                   } /*onClick*/
               } /*OnClickListener*/
           );
@@ -99,18 +104,9 @@ public class Main extends android.app.Activity
       } /*onCreate*/
 
     @Override
-    public void onResume()
-      {
-        super.onResume();
-      /* Runner.post(new Grabber()); */
-      /* TBD */
-      } /*onResume*/
-
-    @Override
     public void onPause()
       {
-      /* TBD */
-        FreeAll();
+        FreeIt();
         super.onPause();
       } /*onPause*/
 
