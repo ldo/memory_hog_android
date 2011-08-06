@@ -69,13 +69,6 @@ public class Main extends android.app.Activity
                     android.view.View TheView
                   )
                   {
-                    System.err.printf
-                      (
-                        "MemoryHog.Main: doit clicked, selected digits are %d, %d, %d\n",
-                        Hundreds.GetDigit(),
-                        Tens.GetDigit(),
-                        Units.GetDigit()
-                      );
                     final int HowMuch =
                             Hundreds.GetDigit() * 100
                         +
