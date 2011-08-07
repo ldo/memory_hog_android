@@ -32,7 +32,6 @@ package nz.gen.geek_central.MemoryHog;
 public class Main extends android.app.Activity
   {
 
-    protected android.os.Handler Runner;
     protected android.widget.TextView Message;
     protected android.widget.ArrayAdapter<String> Digits;
     protected DigitSpinner Hundreds, Tens, Units;
@@ -90,7 +89,6 @@ public class Main extends android.app.Activity
               } /*OnClickListener*/
           );
         Message.setText("Choose Size");
-        Runner = new android.os.Handler();
       } /*onCreate*/
 
     @Override
