@@ -90,6 +90,10 @@ public class DigitSpinner extends android.widget.RelativeLayout
                 DigitsDisplay.setBackgroundDrawable(RenderView.getBackground());
                 final android.widget.PopupWindow ThePopup =
                     new android.widget.PopupWindow(DigitsDisplay);
+                ThePopup.setBackgroundDrawable
+                  (
+                    new android.graphics.drawable.ColorDrawable(0xc0000000)
+                  );
                 DigitsDisplay.setOnItemClickListener
                   (
                     new android.widget.AdapterView.OnItemClickListener()
