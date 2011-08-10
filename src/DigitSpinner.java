@@ -108,7 +108,7 @@ public class DigitSpinner extends android.widget.RelativeLayout
                       } /*OnItemClickListener*/
                   );
                 ThePopup.setWidth(RenderView.getWidth());
-                ThePopup.setHeight(RenderView.getHeight() * 10);
+                ThePopup.setHeight(RenderView.getHeight() * 5); /* quick hack to ensure it's not taller than screen */
                 ThePopup.setFocusable(true);
                 ThePopup.setOnDismissListener
                   (
