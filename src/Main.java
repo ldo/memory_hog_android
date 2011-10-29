@@ -115,15 +115,27 @@ public class Main extends android.app.Activity
                     android.view.View TheView
                   )
                   {
-                    final int HowMuch =
-                            Hundreds.GetDigit() * 100
-                        +
-                            Tens.GetDigit() * 10
-                        +
-                            Units.GetDigit();
-                    Message.setText(String.format("Grabbing %d MiB...", HowMuch));
-                    Hogging = new HoggerTask(HowMuch);
-                    Hogging.execute((Void)null);
+                    if (Hogging == null)
+                      {
+                        final int HowMuch =
+                                Hundreds.GetDigit() * 100
+                            +
+                                Tens.GetDigit() * 10
+                            +
+                                Units.GetDigit();
+                        Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                        Hogging = new HoggerTask(HowMuch);
+                        Hogging.execute((Void)null);
+                      }
+                    else
+                      {
+                        android.widget.Toast.makeText
+                          (
+                            /*context =*/ Main.this,
+                            /*text =*/ "Already grabbing memory",
+                            /*duration =*/ android.widget.Toast.LENGTH_SHORT
+                          ).show();
+                      } /*if*/
                   } /*onClick*/
               } /*OnClickListener*/
           );
