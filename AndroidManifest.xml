@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="nz.gen.geek_central.MemoryHog"
-      android:versionCode="1"
-      android:versionName="15276.2"
+    package="nz.gen.geek_central.MemoryHog"
+    android:versionCode="1"
+    android:versionName="15276.2"
 >
     <uses-sdk
         android:minSdkVersion="7"
