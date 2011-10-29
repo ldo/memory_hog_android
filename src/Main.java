@@ -35,6 +35,53 @@ public class Main extends android.app.Activity
     protected android.widget.TextView Message;
     protected android.widget.ArrayAdapter<String> Digits;
     protected DigitSpinner Hundreds, Tens, Units;
+    protected HoggerTask Hogging = null;
+
+    protected class HoggerTask extends android.os.AsyncTask<Void, Void, Void>
+      {
+        private final int ToGrab;
+        private boolean Success;
+
+        public HoggerTask
+          (
+            int ToGrab
+          )
+          {
+            this.ToGrab = ToGrab;
+          } /*HoggerTask*/
+
+        @Override
+        protected Void doInBackground
+          (
+            Void... Unused
+          )
+          {
+            Success = GrabIt((long)ToGrab * 1048576L);
+            return
+                null;
+          } /*doInBackground*/
+
+        @Override
+        protected void onPostExecute
+          (
+            Void Unused
+          )
+          {
+            Message.setText
+              (
+                String.format
+                  (
+                    Success ?
+                        "Grabbed %d MiB"
+                    :
+                        "Failed to grab %d MiB",
+                    ToGrab
+                  )
+              );
+            Hogging = null;
+          } /*onPostExecute*/
+
+      } /*HoggerTask*/
 
     protected native boolean GrabIt
       (
@@ -74,17 +121,9 @@ public class Main extends android.app.Activity
                             Tens.GetDigit() * 10
                         +
                             Units.GetDigit();
-                    Message.setText
-                      (
-                        String.format
-                          (
-                            GrabIt((long)HowMuch * 1048576L) ?
-                                "Grabbed %d MiB"
-                            :
-                                "Failed to grab %d MiB",
-                            HowMuch
-                          )
-                      );
+                    Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                    Hogging = new HoggerTask(HowMuch);
+                    Hogging.execute((Void)null);
                   } /*onClick*/
               } /*OnClickListener*/
           );
@@ -94,6 +133,11 @@ public class Main extends android.app.Activity
     @Override
     public void onPause()
       {
+        if (Hogging != null)
+          {
+            Hogging.cancel(true);
+            Hogging = null;
+          } /*if*/
         FreeIt();
         super.onPause();
       } /*onPause*/
