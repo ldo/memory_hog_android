@@ -134,6 +134,7 @@ public class Main extends android.app.Activity
                         GrabSize = HowMuch * 1048576L;
                         Hogging = new HoggerTask(HowMuch);
                         Hogging.execute((Void)null);
+                        Progress.setProgress(0);
                         Progress.setVisibility(android.view.View.VISIBLE);
                         BGTask.postDelayed
                           (
