@@ -30,7 +30,18 @@
 static void *
     Grabbed = 0;
 static long
-    GrabSize = 0;
+    GrabSize = 0,
+    GrabbedSoFar;
+
+static jlong GetGrabbedSoFar
+  (
+    JNIEnv * env,
+    jobject this
+  )
+  {
+    return
+        GrabbedSoFar;
+  } /*GetGrabbedSoFar*/
 
 static jboolean GrabIt
   (
@@ -47,7 +58,21 @@ static jboolean GrabIt
     if (Success)
       {
       /* ensure memory really is allocated */
-        memset(Grabbed, -1, GrabSize);
+        unsigned char * NextGrab = Grabbed;
+        const unsigned char * const GrabEnd = (const unsigned char *)Grabbed + GrabSize;
+        const unsigned long MaxGrabStep = 64 * 1024;
+        GrabbedSoFar = 0;
+        while (NextGrab != GrabEnd) /* do in pieces to provide progress update */
+          {
+            unsigned long ThisGrabStep = GrabEnd - NextGrab;
+            if (ThisGrabStep > MaxGrabStep)
+              {
+                ThisGrabStep = MaxGrabStep;
+              } /*if*/
+            memset(NextGrab, -1, ThisGrabStep);
+            NextGrab += ThisGrabStep;
+            GrabbedSoFar += ThisGrabStep;
+          } /*while*/
       } /*if*/
     return
         Success;
@@ -78,6 +103,11 @@ jint JNI_OnLoad
                 .name = "GrabIt",
                 .signature = "(J)Z",
                 .fnPtr = GrabIt,
+            },
+            {
+                .name = "GetGrabbedSoFar",
+                .signature = "()J",
+                .fnPtr = GetGrabbedSoFar,
             },
             {
                 .name = "FreeIt",

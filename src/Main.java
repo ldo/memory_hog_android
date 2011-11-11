@@ -35,7 +35,11 @@ public class Main extends android.app.Activity
     protected android.widget.TextView Message;
     protected android.widget.ArrayAdapter<String> Digits;
     protected DigitSpinner Hundreds, Tens, Units;
+    protected android.widget.ProgressBar Progress;
     protected HoggerTask Hogging = null;
+    protected final android.os.Handler BGTask = new android.os.Handler();
+    protected final long ProgressPollMillis = 250;
+    protected long GrabSize;
 
     protected class HoggerTask extends android.os.AsyncTask<Void, Void, Void>
       {
@@ -87,6 +91,7 @@ public class Main extends android.app.Activity
       (
         long HowMuch
       );
+    protected native long GetGrabbedSoFar();
     protected native void FreeIt();
 
     static
@@ -106,6 +111,8 @@ public class Main extends android.app.Activity
         Hundreds = (DigitSpinner)findViewById(R.id.hundreds);
         Tens = (DigitSpinner)findViewById(R.id.tens);
         Units = (DigitSpinner)findViewById(R.id.units);
+        Progress = (android.widget.ProgressBar)findViewById(R.id.progress);
+        Progress.setVisibility(android.view.View.INVISIBLE);
         ((android.widget.Button)findViewById(R.id.doit)).setOnClickListener
           (
             new android.view.View.OnClickListener()
@@ -124,8 +131,33 @@ public class Main extends android.app.Activity
                             +
                                 Units.GetDigit();
                         Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                        GrabSize = HowMuch * 1048576L;
                         Hogging = new HoggerTask(HowMuch);
                         Hogging.execute((Void)null);
+                        Progress.setVisibility(android.view.View.VISIBLE);
+                        BGTask.postDelayed
+                          (
+                            new Runnable()
+                              {
+                                public void run()
+                                  {
+                                    final long GrabbedSoFar = GetGrabbedSoFar();
+                                    Progress.setProgress
+                                      (
+                                        (int)(GrabbedSoFar * 100 / GrabSize)
+                                      );
+                                    if (GrabbedSoFar < GrabSize)
+                                      {
+                                        BGTask.postDelayed(this, ProgressPollMillis);
+                                      }
+                                    else
+                                      {
+                                        Progress.setVisibility(android.view.View.INVISIBLE);
+                                      } /*if*/
+                                  } /*run*/
+                              } /*Runnable*/,
+                            ProgressPollMillis
+                          );
                       }
                     else
                       {
