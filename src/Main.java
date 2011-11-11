@@ -38,7 +38,7 @@ public class Main extends android.app.Activity
     protected android.widget.ProgressBar Progress;
     protected HoggerTask Hogging = null;
     protected final android.os.Handler BGTask = new android.os.Handler();
-    protected final long ProgressPollMillis = 250;
+    protected final long ProgressPollMillis = 100;
     protected long GrabSize;
 
     protected class HoggerTask extends android.os.AsyncTask<Void, Void, Void>
