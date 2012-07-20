@@ -1,6 +1,6 @@
 To build the app for Android, you will need the Android SDK and NDK,
 available from <http://developer.android.com/>, along with its with
-its prerequisites, including a Java developer kit (either OpenJDK or
+their prerequisites, including a Java developer kit (either OpenJDK or
 the Sun JDK) and Ant.
 
 You will need to add a couple of files to the top of the source
