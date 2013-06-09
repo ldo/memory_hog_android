@@ -14,7 +14,7 @@ package nz.gen.geek_central.MemoryHog;
     Then you discover that everything prior to that has also been
     killed, including the launcher. Bit of a sledgehammer, eh wot...
 
-    Copyright 2011 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+    Copyright 2011, 2013 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 
     Licensed under the Apache License, Version 2.0 (the "License"); you
     may not use this file except in compliance with the License. You may
@@ -130,35 +130,47 @@ public class Main extends android.app.Activity
                                 Tens.GetDigit() * 10
                             +
                                 Units.GetDigit();
-                        Message.setText(String.format("Grabbing %d MiB...", HowMuch));
-                        GrabSize = HowMuch * 1048576L;
-                        Hogging = new HoggerTask(HowMuch);
-                        Hogging.execute((Void)null);
-                        Progress.setProgress(0);
-                        Progress.setVisibility(android.view.View.VISIBLE);
-                        BGTask.postDelayed
-                          (
-                            new Runnable()
-                              {
-                                public void run()
+                        if (HowMuch != 0)
+                          {
+                            Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                            GrabSize = HowMuch * 1048576L;
+                            Hogging = new HoggerTask(HowMuch);
+                            Hogging.execute((Void)null);
+                            Progress.setProgress(0);
+                            Progress.setVisibility(android.view.View.VISIBLE);
+                            BGTask.postDelayed
+                              (
+                                new Runnable()
                                   {
-                                    final long GrabbedSoFar = GetGrabbedSoFar();
-                                    Progress.setProgress
-                                      (
-                                        (int)(GrabbedSoFar * 100 / GrabSize)
-                                      );
-                                    if (GrabbedSoFar < GrabSize)
+                                    public void run()
                                       {
-                                        BGTask.postDelayed(this, ProgressPollMillis);
-                                      }
-                                    else
-                                      {
-                                        Progress.setVisibility(android.view.View.INVISIBLE);
-                                      } /*if*/
-                                  } /*run*/
-                              } /*Runnable*/,
-                            ProgressPollMillis
-                          );
+                                        final long GrabbedSoFar = GetGrabbedSoFar();
+                                        Progress.setProgress
+                                          (
+                                            (int)(GrabbedSoFar * 100 / GrabSize)
+                                          );
+                                        if (GrabbedSoFar < GrabSize)
+                                          {
+                                            BGTask.postDelayed(this, ProgressPollMillis);
+                                          }
+                                        else
+                                          {
+                                            Progress.setVisibility(android.view.View.INVISIBLE);
+                                          } /*if*/
+                                      } /*run*/
+                                  } /*Runnable*/,
+                                ProgressPollMillis
+                              );
+                          }
+                        else
+                          {
+                            android.widget.Toast.makeText
+                              (
+                                /*context =*/ Main.this,
+                                /*text =*/ "Specify a nonzero amount of memory to grab",
+                                /*duration =*/ android.widget.Toast.LENGTH_SHORT
+                              ).show();
+                          } /*if*/
                       }
                     else
                       {
