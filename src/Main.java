@@ -100,14 +100,11 @@ public class Main extends android.app.Activity
             Hogger.FreeIt();
             NativeOK = true;
           }
-        catch (ExceptionInInitializerError Whoopsie)
+        catch (ExceptionInInitializerError Whoopsie) /* happens on first attempt */
           {
-            android.widget.Toast.makeText
-              (
-                /*context =*/ Main.this,
-                /*text =*/ String.format("Sorry, cannot run on architecture “%s”", android.os.Build.CPU_ABI),
-                /*duration =*/ android.widget.Toast.LENGTH_SHORT
-              ).show();
+          }
+        catch (NoClassDefFoundError Whoopsie) /* happens on subsequent attempts */
+          {
           } /*try*/
         if (NativeOK)
           {
@@ -193,6 +190,12 @@ public class Main extends android.app.Activity
           }
         else
           {
+            android.widget.Toast.makeText
+              (
+                /*context =*/ Main.this,
+                /*text =*/ String.format("Sorry, cannot run on architecture “%s”", android.os.Build.CPU_ABI),
+                /*duration =*/ android.widget.Toast.LENGTH_SHORT
+              ).show();
             finish();
           } /*if*/
       } /*onCreate*/
