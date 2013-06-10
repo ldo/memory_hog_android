@@ -60,7 +60,7 @@ public class Main extends android.app.Activity
             Void... Unused
           )
           {
-            Success = GrabIt((long)ToGrab * 1048576L);
+            Success = Hogger.GrabIt((long)ToGrab * 1048576L);
             return
                 null;
           } /*doInBackground*/
@@ -85,19 +85,7 @@ public class Main extends android.app.Activity
             Hogging = null;
           } /*onPostExecute*/
 
-      } /*HoggerTask*/
-
-    protected native boolean GrabIt
-      (
-        long HowMuch
-      );
-    protected native long GetGrabbedSoFar();
-    protected native void FreeIt();
-
-    static
-      {
-        System.loadLibrary("hogger");
-      } /*static*/
+      } /*HoggerTask*/;
 
     @Override
     public void onCreate
@@ -106,85 +94,107 @@ public class Main extends android.app.Activity
       )
       {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        Message = (android.widget.TextView)findViewById(R.id.message);
-        Hundreds = (DigitSpinner)findViewById(R.id.hundreds);
-        Tens = (DigitSpinner)findViewById(R.id.tens);
-        Units = (DigitSpinner)findViewById(R.id.units);
-        Progress = (android.widget.ProgressBar)findViewById(R.id.progress);
-        Progress.setVisibility(android.view.View.INVISIBLE);
-        ((android.widget.Button)findViewById(R.id.doit)).setOnClickListener
-          (
-            new android.view.View.OnClickListener()
-              {
-                public void onClick
-                  (
-                    android.view.View TheView
-                  )
+        boolean NativeOK = false;
+        try
+          {
+            Hogger.FreeIt();
+            NativeOK = true;
+          }
+        catch (ExceptionInInitializerError Whoopsie)
+          {
+            android.widget.Toast.makeText
+              (
+                /*context =*/ Main.this,
+                /*text =*/ String.format("Sorry, cannot run on architecture “%s”", android.os.Build.CPU_ABI),
+                /*duration =*/ android.widget.Toast.LENGTH_SHORT
+              ).show();
+          } /*try*/
+        if (NativeOK)
+          {
+            setContentView(R.layout.main);
+            Message = (android.widget.TextView)findViewById(R.id.message);
+            Hundreds = (DigitSpinner)findViewById(R.id.hundreds);
+            Tens = (DigitSpinner)findViewById(R.id.tens);
+            Units = (DigitSpinner)findViewById(R.id.units);
+            Progress = (android.widget.ProgressBar)findViewById(R.id.progress);
+            Progress.setVisibility(android.view.View.INVISIBLE);
+            ((android.widget.Button)findViewById(R.id.doit)).setOnClickListener
+              (
+                new android.view.View.OnClickListener()
                   {
-                    if (Hogging == null)
+                    public void onClick
+                      (
+                        android.view.View TheView
+                      )
                       {
-                        final int HowMuch =
-                                Hundreds.GetDigit() * 100
-                            +
-                                Tens.GetDigit() * 10
-                            +
-                                Units.GetDigit();
-                        if (HowMuch != 0)
+                        if (Hogging == null)
                           {
-                            Message.setText(String.format("Grabbing %d MiB...", HowMuch));
-                            GrabSize = HowMuch * 1048576L;
-                            Hogging = new HoggerTask(HowMuch);
-                            Hogging.execute((Void)null);
-                            Progress.setProgress(0);
-                            Progress.setVisibility(android.view.View.VISIBLE);
-                            BGTask.postDelayed
-                              (
-                                new Runnable()
-                                  {
-                                    public void run()
+                            final int HowMuch =
+                                    Hundreds.GetDigit() * 100
+                                +
+                                    Tens.GetDigit() * 10
+                                +
+                                    Units.GetDigit();
+                            if (HowMuch != 0)
+                              {
+                                Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                                GrabSize = HowMuch * 1048576L;
+                                Hogging = new HoggerTask(HowMuch);
+                                Hogging.execute((Void)null);
+                                Progress.setProgress(0);
+                                Progress.setVisibility(android.view.View.VISIBLE);
+                                BGTask.postDelayed
+                                  (
+                                    new Runnable()
                                       {
-                                        final long GrabbedSoFar = GetGrabbedSoFar();
-                                        Progress.setProgress
-                                          (
-                                            (int)(GrabbedSoFar * 100 / GrabSize)
-                                          );
-                                        if (GrabbedSoFar < GrabSize)
+                                        public void run()
                                           {
-                                            BGTask.postDelayed(this, ProgressPollMillis);
-                                          }
-                                        else
-                                          {
-                                            Progress.setVisibility(android.view.View.INVISIBLE);
-                                          } /*if*/
-                                      } /*run*/
-                                  } /*Runnable*/,
-                                ProgressPollMillis
-                              );
+                                            final long GrabbedSoFar = Hogger.GetGrabbedSoFar();
+                                            Progress.setProgress
+                                              (
+                                                (int)(GrabbedSoFar * 100 / GrabSize)
+                                              );
+                                            if (GrabbedSoFar < GrabSize)
+                                              {
+                                                BGTask.postDelayed(this, ProgressPollMillis);
+                                              }
+                                            else
+                                              {
+                                                Progress.setVisibility(android.view.View.INVISIBLE);
+                                              } /*if*/
+                                          } /*run*/
+                                      } /*Runnable*/,
+                                    ProgressPollMillis
+                                  );
+                              }
+                            else
+                              {
+                                android.widget.Toast.makeText
+                                  (
+                                    /*context =*/ Main.this,
+                                    /*text =*/ "Specify a nonzero amount of memory to grab",
+                                    /*duration =*/ android.widget.Toast.LENGTH_SHORT
+                                  ).show();
+                              } /*if*/
                           }
                         else
                           {
                             android.widget.Toast.makeText
                               (
                                 /*context =*/ Main.this,
-                                /*text =*/ "Specify a nonzero amount of memory to grab",
+                                /*text =*/ "Already grabbing memory",
                                 /*duration =*/ android.widget.Toast.LENGTH_SHORT
                               ).show();
                           } /*if*/
-                      }
-                    else
-                      {
-                        android.widget.Toast.makeText
-                          (
-                            /*context =*/ Main.this,
-                            /*text =*/ "Already grabbing memory",
-                            /*duration =*/ android.widget.Toast.LENGTH_SHORT
-                          ).show();
-                      } /*if*/
-                  } /*onClick*/
-              } /*OnClickListener*/
-          );
-        Message.setText("Choose Size");
+                      } /*onClick*/
+                  } /*OnClickListener*/
+              );
+            Message.setText("Choose Size");
+          }
+        else
+          {
+            finish();
+          } /*if*/
       } /*onCreate*/
 
     @Override
@@ -195,8 +205,8 @@ public class Main extends android.app.Activity
             Hogging.cancel(true);
             Hogging = null;
           } /*if*/
-        FreeIt();
+        Hogger.FreeIt();
         super.onPause();
       } /*onPause*/
 
-  } /*Main*/
+  } /*Main*/;

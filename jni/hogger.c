@@ -7,7 +7,7 @@
     indication; unfortunately, instead of malloc returning
     a failure, the system simply kills the process.
 
-    Copyright 2011 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+    Copyright 2011, 2013 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 
     Licensed under the Apache License, Version 2.0 (the "License"); you
     may not use this file except in compliance with the License. You may
@@ -36,7 +36,7 @@ static long
 static jlong GetGrabbedSoFar
   (
     JNIEnv * env,
-    jobject this
+    jclass cthis
   )
   {
     return
@@ -46,7 +46,7 @@ static jlong GetGrabbedSoFar
 static jboolean GrabIt
   (
     JNIEnv * env,
-    jobject this,
+    jclass cthis,
     jlong HowMuch
   )
   {
@@ -81,7 +81,7 @@ static jboolean GrabIt
 static void FreeIt
   (
     JNIEnv * env,
-    jobject this
+    jclass cthis
   )
   {
     free(Grabbed);
@@ -124,7 +124,7 @@ jint JNI_OnLoad
                 (**env).RegisterNatives
                   (
                     env,
-                    (**env).FindClass(env, "nz/gen/geek_central/MemoryHog/Main"),
+                    (**env).FindClass(env, "nz/gen/geek_central/MemoryHog/Hogger"),
                     methods,
                     sizeof methods / sizeof(JNINativeMethod)
                   )
