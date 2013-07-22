@@ -96,6 +96,7 @@ public class DigitSpinner extends android.widget.RelativeLayout
                   (
                     new android.graphics.drawable.ColorDrawable(0xc0000000)
                   );
+                  /* if I don't do this, popup cannot be dismissed with back key! */
                 DigitsDisplay.setOnItemClickListener
                   (
                     new android.widget.AdapterView.OnItemClickListener()
