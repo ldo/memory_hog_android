@@ -3,4 +3,6 @@
     <string name="app_name">Memory Hog!</string>
     <string name="mib">MiB</string>
     <string name="doit">Hog Memory!</string>
+    <string name="grabbing_msg">"Grabbing %1$d %2$s..."</string>
+    <string name="java_heap_size_msg">Max Java heap = %1$.3f%2$s</string>
 </resources>

@@ -14,7 +14,7 @@ package nz.gen.geek_central.MemoryHog;
     Then you discover that everything prior to that has also been
     killed, including the launcher. Bit of a sledgehammer, eh wot...
 
-    Copyright 2011, 2013 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+    Copyright 2011, 2013, 2015 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 
     Licensed under the Apache License, Version 2.0 (the "License"); you
     may not use this file except in compliance with the License. You may
@@ -32,6 +32,7 @@ package nz.gen.geek_central.MemoryHog;
 public class Main extends android.app.Activity
   {
 
+    public static final long Mebibyte = 1048576L;
     protected android.widget.TextView Message;
     protected android.widget.ArrayAdapter<String> Digits;
     protected DigitSpinner Hundreds, Tens, Units;
@@ -60,7 +61,7 @@ public class Main extends android.app.Activity
             Void... Unused
           )
           {
-            Success = Hogger.GrabIt((long)ToGrab * 1048576L);
+            Success = Hogger.GrabIt((long)ToGrab * Mebibyte);
             return
                 null;
           } /*doInBackground*/
@@ -115,6 +116,15 @@ public class Main extends android.app.Activity
             Units = (DigitSpinner)findViewById(R.id.units);
             Progress = (android.widget.ProgressBar)findViewById(R.id.progress);
             Progress.setVisibility(android.view.View.INVISIBLE);
+            ((android.widget.TextView)findViewById(R.id.java_heap_size)).setText
+              (
+                String.format
+                  (
+                    getString(R.string.java_heap_size_msg),
+                    (double)Runtime.getRuntime().maxMemory() / Mebibyte,
+                    getString(R.string.mib)
+                  )
+              );
             ((android.widget.Button)findViewById(R.id.doit)).setOnClickListener
               (
                 new android.view.View.OnClickListener()
@@ -134,7 +144,7 @@ public class Main extends android.app.Activity
                                     Units.GetDigit();
                             if (HowMuch != 0)
                               {
-                                Message.setText(String.format("Grabbing %d MiB...", HowMuch));
+                                Message.setText(String.format(getString(R.string.grabbing_msg), HowMuch, getString(R.string.mib)));
                                 GrabSize = HowMuch * 1048576L;
                                 Hogging = new HoggerTask(HowMuch);
                                 Hogging.execute((Void)null);
